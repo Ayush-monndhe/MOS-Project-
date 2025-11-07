@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather </title>
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-anim"></div>
+
+  <div class="container" id="app">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="search-wrap" style="width:100%">
+          <div class="brand">
+            <h1>Weather Wave</h1>
+            <p class="muted">Real-time weather • glassmorphism UI</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px">
+        <div class="search-box">
+          <input id="city-input" type="search" placeholder="Enter city name (e.g. London, Mumbai)" autocomplete="off" aria-label="Search city">
+          <div class="suggestions" id="suggestions" hidden></div>
+        </div>
+      </div>
+
+      <div class="weather-card" id="weather-card" style="margin-top:18px">
+        <div class="top">
+          <div>
+            <div class="city" id="city-name">Search a city</div>
+            <div class="time" id="local-time">--</div>
+          </div>
+          <div class="weather-icon" id="weather-icon"></div>
+        </div>
+
+        <div class="temp-row">
+          <div class="temp" id="temp">--°C</div>
+          <div class="cond">
+            <div class="text" id="condition-text">--</div>
+            <div class="meta" id="meta">Humidity: -- • Wind: --</div>
+          </div>
+        </div>
+
+        <div class="details" id="details">
+          <div class="detail">
+            <strong id="feelslike">Feels like --°C</strong>
+            <span>Feels like temperature</span>
+          </div>
+          <div class="detail">
+            <strong id="precip">Precip -- mm</strong>
+            <span>Precipitation</span>
+          </div>
+          <div class="detail">
+            <strong id="uv">UV --</strong>
+            <span>UV index</span>
+          </div>
+        </div>
+
+        <footer>
+          <div class="muted">Data source: WeatherAPI.com</div>
+        </footer>
+      </div>
+    </div>
+
+    <aside class="right">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-weight:700">Now</div>
+        <div class="muted" id="day-night">--</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin-top:18px">
+        <div class="weather-icon" id="big-icon"></div>
+        <div>
+          <div style="font-size:18px;font-weight:700" id="big-temp">--°C</div>
+          <div class="muted" id="big-cond">--</div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px" id="extra-info">
+        <div class="muted">Sunrise / Sunset: --</div>
+      </div>
+
+      <div style="margin-top:18px">
+        <label class="muted">Temperature scale</label>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button id="c-btn" aria-pressed="true">°C</button>
+          <button id="f-btn" aria-pressed="false">°F</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
