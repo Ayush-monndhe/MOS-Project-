@@ -3,46 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5-Day Weather Forecast</title>
+  <title>WeatherNow</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div class="logo">WF</div>
-      <h1>5-Day Weather Forecast</h1>
+  <main class="container">
+    <header class="topbar">
+      <h1>🌎 WeatherNow</h1>
+      <p class="tag">Live Forecasts Made Simple</p>
     </header>
 
-    <div class="search">
-      <input type="search" id="cityInput" placeholder="Enter city name..." />
-      <button id="searchBtn">Search</button>
-      <button id="locBtn">📍 My Location</button>
-    </div>
-
-    <div id="error" class="error" style="display:none;"></div>
-
-    <div id="current" class="card">
-      <div class="weather-main">
-        <h2 id="city">—</h2>
-        <p id="temp" class="temp">—°C</p>
-        <p id="desc" class="desc">Weather Info</p>
-        <div class="meta">
-          <span id="humidity">Humidity: —%</span>
-          <span id="wind">Wind: — m/s</span>
-        </div>
+    <section class="controls">
+      <input type="text" id="place" placeholder="Type a city..." />
+      <div class="btns">
+        <button id="getWeather">Go</button>
+        <button id="geoBtn">Use My Location</button>
       </div>
-      <div class="icon">
-        <img id="iconImg" src="" alt="icon" style="display:none;" />
+    </section>
+
+    <section id="msg" class="hidden"></section>
+
+    <section id="now" class="current hidden">
+      <div class="now-info">
+        <h2 id="cityName">City</h2>
+        <p id="tempNow" class="temp">--°C</p>
+        <p id="condition">Condition</p>
+        <p id="humidityNow"></p>
+        <p id="windNow"></p>
       </div>
-    </div>
+      <img id="iconNow" src="" alt="" class="icon hidden" />
+    </section>
 
-    <h3 class="subtitle">5-Day Forecast</h3>
-    <div id="forecast" class="forecast"></div>
+    <h3 id="nextTitle" class="hidden">Next 5 Days</h3>
+    <div id="nextDays" class="days-grid"></div>
 
-    <footer>
-      <span id="status">Ready</span>
+    <footer class="footer">
+      <p>Made with 💙 using OpenWeather API</p>
     </footer>
-  </div>
+  </main>
 
   <script src="script.js"></script>
 </body>

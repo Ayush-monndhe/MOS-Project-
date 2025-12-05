@@ -1,94 +1,78 @@
-const API_KEY = "f8fb29ddd3398df48bcfc503d3247630";
+const KEY = "f8fb29ddd3398df48bcfc503d3247630";
+const cityInput = document.getElementById("place");
+const goBtn = document.getElementById("getWeather");
+const geoBtn = document.getElementById("geoBtn");
+const msg = document.getElementById("msg");
 
-const cityInput = document.getElementById("cityInput");
-const searchBtn = document.getElementById("searchBtn");
-const locBtn = document.getElementById("locBtn");
-const errorEl = document.getElementById("error");
-const statusEl = document.getElementById("status");
-
-async function fetchWeather(city = "") {
+async function loadWeather(city = "") {
   try {
-    errorEl.style.display = "none";
-    statusEl.textContent = "Fetching weather...";
-
-    let url;
-    if (city) {
-      url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
-    } else {
-      const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej));
-      const { latitude, longitude } = pos.coords;
-      url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`;
-    }
-
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("City not found!");
-    const data = await response.json();
-
-    displayCurrent(data);
-    fetchForecast(data.coord.lat, data.coord.lon);
-  } catch (err) {
-    console.error(err);
-    errorEl.textContent = "⚠️ " + err.message;
-    errorEl.style.display = "block";
-    statusEl.textContent = "Error";
-  }
-}
-
-async function fetchForecast(lat, lon) {
-  try {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`;
+    msg.classList.add("hidden");
+    const url = city
+      ? `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${KEY}`
+      : await getGeoUrl();
     const res = await fetch(url);
+    if (!res.ok) throw new Error("City not found!");
     const data = await res.json();
-    displayForecast(data.list);
-  } catch (err) {
-    console.error(err);
-    errorEl.textContent = "⚠️ Unable to load forecast data.";
-    errorEl.style.display = "block";
-  } finally {
-    statusEl.textContent = "Ready";
+    showCurrent(data);
+    await loadForecast(data.coord.lat, data.coord.lon);
+  } catch (e) {
+    msg.textContent = e.message;
+    msg.classList.remove("hidden");
   }
 }
 
-function displayCurrent(data) {
-  document.getElementById("city").textContent = `${data.name}, ${data.sys.country}`;
-  document.getElementById("temp").textContent = `${Math.round(data.main.temp)}°C`;
-  document.getElementById("desc").textContent = data.weather[0].description;
-  document.getElementById("humidity").textContent = `Humidity: ${data.main.humidity}%`;
-  document.getElementById("wind").textContent = `Wind: ${data.wind.speed} m/s`;
-
-  const icon = data.weather[0].icon;
-  const iconImg = document.getElementById("iconImg");
-  iconImg.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-  iconImg.style.display = "block";
+async function getGeoUrl() {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const { latitude, longitude } = pos.coords;
+        resolve(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${KEY}`);
+      },
+      () => reject(new Error("Geolocation blocked"))
+    );
+  });
 }
 
-function displayForecast(list) {
-  const forecastContainer = document.getElementById("forecast");
-  forecastContainer.innerHTML = "";
+function showCurrent(data) {
+  document.getElementById("now").classList.remove("hidden");
+  document.getElementById("nextTitle").classList.remove("hidden");
 
-  // Show 1 forecast every 8 intervals (8*3h = 24h)
-  for (let i = 0; i < list.length; i += 8) {
-    const item = list[i];
-    const date = new Date(item.dt * 1000);
-    const day = date.toLocaleDateString("en-US", { weekday: "short" });
-    const temp = Math.round(item.main.temp);
-    const icon = item.weather[0].icon;
+  document.getElementById("cityName").textContent = `${data.name}, ${data.sys.country}`;
+  document.getElementById("tempNow").textContent = `${Math.round(data.main.temp)}°C`;
+  document.getElementById("condition").textContent = data.weather[0].description;
+  document.getElementById("humidityNow").textContent = `Humidity: ${data.main.humidity}%`;
+  document.getElementById("windNow").textContent = `Wind: ${data.wind.speed} m/s`;
 
-    const div = document.createElement("div");
-    div.classList.add("forecast-day");
-    div.innerHTML = `
-      <p>${day}</p>
-      <img src="https://openweathermap.org/img/wn/${icon}.png" alt="">
-      <p>${temp}°C</p>
-      <p>${item.weather[0].main}</p>
+  const icon = document.getElementById("iconNow");
+  icon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+  icon.classList.remove("hidden");
+}
+
+async function loadForecast(lat, lon) {
+  const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const grid = document.getElementById("nextDays");
+  grid.innerHTML = "";
+  for (let i = 0; i < data.list.length; i += 8) {
+    const day = data.list[i];
+    const date = new Date(day.dt * 1000);
+    const name = date.toLocaleDateString("en-US", { weekday: "short" });
+    grid.innerHTML += `
+      <div class="day">
+        <p>${name}</p>
+        <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png" alt="">
+        <p>${Math.round(day.main.temp)}°C</p>
+        <p>${day.weather[0].main}</p>
+      </div>
     `;
-    forecastContainer.appendChild(div);
   }
 }
 
-searchBtn.addEventListener("click", () => {
+goBtn.addEventListener("click", () => {
   const city = cityInput.value.trim();
-  if (city) fetchWeather(city);
+  if (city) loadWeather(city);
 });
 
-locBtn.addEventListener("click", () => fetchWeather());
+geoBtn.addEventListener("click", () => loadWeather());
