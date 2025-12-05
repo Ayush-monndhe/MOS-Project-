@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5-Day Weather Forecast</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">WF</div>
+      <h1>5-Day Weather Forecast</h1>
+    </header>
+
+    <div class="search">
+      <input type="search" id="cityInput" placeholder="Enter city name..." />
+      <button id="searchBtn">Search</button>
+      <button id="locBtn">📍 My Location</button>
+    </div>
+
+    <div id="error" class="error" style="display:none;"></div>
+
+    <div id="current" class="card">
+      <div class="weather-main">
+        <h2 id="city">—</h2>
+        <p id="temp" class="temp">—°C</p>
+        <p id="desc" class="desc">Weather Info</p>
+        <div class="meta">
+          <span id="humidity">Humidity: —%</span>
+          <span id="wind">Wind: — m/s</span>
+        </div>
+      </div>
+      <div class="icon">
+        <img id="iconImg" src="" alt="icon" style="display:none;" />
+      </div>
+    </div>
+
+    <h3 class="subtitle">5-Day Forecast</h3>
+    <div id="forecast" class="forecast"></div>
+
+    <footer>
+      <span id="status">Ready</span>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
